@@ -7,4 +7,7 @@ Exploring various way to add context to the embedding to improve retrieval
 3. [Summary-based indexing](https://www.llamaindex.ai/blog/a-new-document-summary-index-for-llm-powered-qa-systems-9a32ece2f9ec)
 4. Contextual BM25
 
+## Dependencies
+- [Chroma](https://github.com/chroma-core/chroma)
+
 
