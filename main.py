@@ -10,9 +10,6 @@ class ContextualRetrieval:
 
 
 
-
-
-
 if __name__ == "__main__":
     load_dotenv()
     chromadb_client = chromadb.Client()
