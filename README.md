@@ -9,5 +9,6 @@ Exploring various way to add context to the embedding to improve retrieval
 
 ## Dependencies
 - [Chroma](https://github.com/chroma-core/chroma)
+- Google GenerativeAI: Using Gemnini as the model for embeddings
 
 
