@@ -12,5 +12,29 @@ Exploring various way to add context to the embedding to improve retrieval
 - Google GenerativeAI: Using Gemnini as the model for embeddings
 - llamaindex
 
+## High Level Workflows
+```mermaid
+graph LR;
+    subgraph "Ingestion"
+        direction LR
+        Documents-->Chunks-->Embeddings-->Index;
+    end
+```
+```mermaid
+graph LR;
+    subgraph Retrieval
+        direction LR
+        Query-->index-->top-k
+    end
+    
+    subgraph Synthesis
+        direction LR
+        LLM-->Response
+    end
+
+    Retrieval-->Synthesis
+```
+
+
 
 
