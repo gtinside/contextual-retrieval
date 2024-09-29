@@ -2,7 +2,7 @@
 Exploring various way to implement RAG
 
 ## Techniques
-1. Naive RAG (Simple RAG)
+1. [Naive RAG (Simple RAG)](./simple_rag.py)
    - Basic retrieval and generation without advanced processing
 
 2. Simple RAG with Memory
