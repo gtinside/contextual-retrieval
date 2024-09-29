@@ -23,15 +23,17 @@ class ContextualRetrieval:
         storage_context = StorageContext.from_defaults(vector_store=chroma_vector_store)
          # The following command with store the index into chroma for embedding
         VectorStoreIndex.from_documents(documents=documents, embed_model=self.embed_model, storage_context=storage_context)
+       
         
     def query_data(self, query):
         # load index, as it is stored in vector database as embeddings
         # Step 1: Load Chroma Vector Store
         chroma_vector_store = ChromaVectorStore(chroma_collection=self.chroma_collection)
-        # Step 2: Create a storage context
-        storage_context = StorageContext.from_defaults(vector_store=chroma_vector_store)
-        # Step 3: Load Index
-        index = load_index_from_storage(storage_context=storage_context, embed_model=self.embed_model)
+       # Step 2: Load Index
+        index = VectorStoreIndex.from_vector_store(
+            vector_store=chroma_vector_store,
+            embed_model=self.embed_model
+        )
         query_engine = index.as_query_engine()
         return query_engine.query(query)
 
@@ -43,7 +45,8 @@ if __name__ == "__main__":
     chromadb_client = chromadb.PersistentClient()
     collection = chromadb_client.create_collection(name="embeddings", get_or_create=True)
     contextual_retrieval = ContextualRetrieval(chroma_collection=collection)
-    if collection.count() == 0:
+    if collection.count() ==0:
+        print("generating embeddings")
         contextual_retrieval.generate_embeddings()
     print(contextual_retrieval.query_data("Earnings before taxes"))
 
