@@ -5,3 +5,4 @@ llama-index
 llama-index-embeddings-gemini
 llama-index-vector-stores-chroma
 llama-index-llms-anthropic
+loguru

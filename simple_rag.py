@@ -1,12 +1,13 @@
 import os
 import chromadb
 from dotenv import load_dotenv
-from llama_index.core import Settings, StorageContext, VectorStoreIndex, SimpleDirectoryReader, load_index_from_storage
+from llama_index.core import Settings, StorageContext, VectorStoreIndex, SimpleDirectoryReader
 from llama_index.embeddings.gemini import GeminiEmbedding
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.llms.anthropic import Anthropic
+from loguru import logger
 
-class ContextualRetrieval:
+class SimpleRAG:
     def __init__(self, chroma_collection) -> None:
         self.chroma_collection = chroma_collection
         self.embed_model = GeminiEmbedding(model_name="models/embedding-001", 
@@ -44,11 +45,11 @@ if __name__ == "__main__":
     Settings.llm = Anthropic(model="claude-3-sonnet-20240229")
     chromadb_client = chromadb.PersistentClient()
     collection = chromadb_client.create_collection(name="embeddings", get_or_create=True)
-    contextual_retrieval = ContextualRetrieval(chroma_collection=collection)
+    simple_rag = SimpleRAG(chroma_collection=collection)
     if collection.count() ==0:
-        print("generating embeddings")
-        contextual_retrieval.generate_embeddings()
-    print(contextual_retrieval.query_data("Earnings before taxes"))
+        logger.info("generating embeddings")
+        simple_rag.generate_embeddings()
+    logger.info(simple_rag.query_data("Earnings before taxes"))
 
 
 
