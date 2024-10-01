@@ -39,7 +39,7 @@ class SimpleRAGWithMemory:
 
         # Before sending the response, check if previous conversations are related
         query_with_context = self.get_previous_summary(query)
-        logger.info("Executing the query: {}", query_with_context)
+        logger.debug("Executing the query: {}", query_with_context)
         response= engine.query(query_with_context)
         
         # Storing data in memory
@@ -47,20 +47,25 @@ class SimpleRAGWithMemory:
                                       , ChatMessage(role=MessageRole.ASSISTANT, content=response)])
         return response
 
-    def get_previous_summary(self, query):
-        logger.info("Checking for previous conversations related to {}", query)
+    def get_previous_summary(self, current_question):
+        logger.debug("Checking for previous conversations related to {}", current_question)
         #TODO: Ideally this should just be last few messages, pulling everything for now
         chat_history = self.chat_memory.get()
         if not chat_history: 
-            return query
-        previous_questions = ",".join([str(chat.content) for chat in chat_history if chat.role == MessageRole.USER])
-        previous_answers = ",".join([str(chat.content) for chat in chat_history if chat.role == MessageRole.ASSISTANT])
-        prompt = f'''Based on the question: {previous_questions} and answer: {previous_answers}, 
-                 generate a standalone question for {query}'''
-        logger.info("Prompt to be sent is {}", prompt)
-        response = Settings.llm.chat([ChatMessage(role=MessageRole.USER, content=query)])
-        logger.info("Received response from LLM on comparison: {}", response.message)
-        return response.message
+            return current_question
+        
+        previous_questions = [str(chat.content) for chat in chat_history if chat.role == MessageRole.USER]
+        previous_answers = [str(chat.content) for chat in chat_history if chat.role == MessageRole.ASSISTANT]
+        prev_qa = ""
+        for question, answer in zip(previous_questions, previous_answers):
+            prev_qa += f"Question: {question}, Answer: {answer} \n"   
+
+        
+        prompt = f''' Answer question {current_question},
+                 Previous Questions and Answers:
+                 {prev_qa}'''      
+        logger.debug("Prompt to be sent is {}", prompt)
+        return prompt
     
 
 if __name__ == "__main__":
@@ -70,8 +75,12 @@ if __name__ == "__main__":
     chroma_collection = chroma_client.create_collection("rag_with_mem")
     rag_with_mem = SimpleRAGWithMemory(chroma_collection)
     rag_with_mem.generate_embeddings()
-    logger.info("Query 1: {}", rag_with_mem.query_data("Total marketable securities on June 29, 2024?"))
-    logger.info("Query 2, {}", rag_with_mem.query_data("How about on September 2023?"))
-    logger.info("Query 3, {}", rag_with_mem.query_data("What's the percentage change between them?"))
+    queries = [ "Total marketable securities on June 29, 2024?",
+                 "How about on September 2023?",
+                "What's the percentage change between them?"]
+    
+    for index, query in enumerate(queries):
+        logger.info(f"Query {index + 1}: {query}; Response {index}: {rag_with_mem.query_data(query)}")
+    
 
     
