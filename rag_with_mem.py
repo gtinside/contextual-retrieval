@@ -1,4 +1,5 @@
 import os
+from loguru import logger
 import chromadb
 from dotenv import load_dotenv
 from llama_index.core.llms import ChatMessage, MessageRole
@@ -35,14 +36,32 @@ class SimpleRAGWithMemory:
         chroma_vector_store = ChromaVectorStore(chroma_collection=self.chroma_collection)
         index = VectorStoreIndex.from_vector_store(vector_store=chroma_vector_store, embed_model=self.embed_model)
         engine = index.as_query_engine()
-        response= engine.query(query)
+
+        # Before sending the response, check if previous conversations are related
+        query_with_context = self.get_previous_summary(query)
+        logger.info("Executing the query: {}", query_with_context)
+        response= engine.query(query_with_context)
         
         # Storing data in memory
-        self.chat_memory.put_messages([ChatMessage(role=MessageRole.USER, content=query)]
-                                      , ChatMessage(role=MessageRole.ASSISTANT, content=response))
+        self.chat_memory.put_messages([ChatMessage(role=MessageRole.USER, content=query)
+                                      , ChatMessage(role=MessageRole.ASSISTANT, content=response)])
         return response
-       
 
+    def get_previous_summary(self, query):
+        logger.info("Checking for previous conversations related to {}", query)
+        #TODO: Ideally this should just be last few messages, pulling everything for now
+        chat_history = self.chat_memory.get()
+        if not chat_history: 
+            return query
+        previous_questions = ",".join([str(chat.content) for chat in chat_history if chat.role == MessageRole.USER])
+        previous_answers = ",".join([str(chat.content) for chat in chat_history if chat.role == MessageRole.ASSISTANT])
+        prompt = f'''Based on the question: {previous_questions} and answer: {previous_answers}, 
+                 generate a standalone question for {query}'''
+        logger.info("Prompt to be sent is {}", prompt)
+        response = Settings.llm.chat([ChatMessage(role=MessageRole.USER, content=query)])
+        logger.info("Received response from LLM on comparison: {}", response.message)
+        return response.message
+    
 
 if __name__ == "__main__":
     load_dotenv()
@@ -51,6 +70,8 @@ if __name__ == "__main__":
     chroma_collection = chroma_client.create_collection("rag_with_mem")
     rag_with_mem = SimpleRAGWithMemory(chroma_collection)
     rag_with_mem.generate_embeddings()
-    print(rag_with_mem.query_data("Total revenue"))
+    logger.info("Query 1: {}", rag_with_mem.query_data("Total marketable securities on June 29, 2024?"))
+    logger.info("Query 2, {}", rag_with_mem.query_data("How about on September 2023?"))
+    logger.info("Query 3, {}", rag_with_mem.query_data("What's the percentage change between them?"))
 
     
