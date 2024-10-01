@@ -5,7 +5,7 @@ Exploring various way to implement RAG
 1. [Naive RAG (Simple RAG)](./simple_rag.py)
    - Basic retrieval and generation without advanced processing
 
-2. Simple RAG with Memory
+2. [Simple RAG with Memory](./rag_with_mem.py)
    - Maintains context from previous interactions
 
 3. Branched RAG
