@@ -22,14 +22,14 @@ class BranchedRAG:
         chroma_store_fin_stmt = ChromaVectorStore.from_collection(collection=self.chroma_col_fin_stmt)
         chroma_store_stock_prices = ChromaVectorStore.from_collection(collection=self.chroma_col_stock_prices)
 
-        index_fin_stmt_document = SimpleDirectoryReader.load_file("/data1/apple_FY24_Q3_Financial_Statements.pdf")
-        index_stock_prices_document = SimpleDirectoryReader.load_file("/data1/SP 500 Stock Prices 2014-2017.csv")
+        index_fin_stmt_document = SimpleDirectoryReader(input_files=["data/apple_FY24_Q3_Financial_Statements.pdf"]).load_data()
+        index_stock_prices_document = SimpleDirectoryReader(input_files=["data/SP 500 Stock Prices 2014-2017.csv"]).load_data()
 
         storage_context_fin_stmt = StorageContext.from_defaults(vector_store=chroma_store_fin_stmt)
         storage_context_stock_prices = StorageContext.from_defaults(vector_store=chroma_store_stock_prices)
         
-        store_fin_stmt = VectorStoreIndex.from_documents(documents=index_fin_stmt_document, storage_context=storage_context_fin_stmt, vector_store=chroma_store_fin_stmt, embed_model=self.embed)
-        store_stock_prices = VectorStoreIndex.from_documents(documents=index_stock_prices_document, storage_context=storage_context_stock_prices, vector_store=chroma_store_stock_prices, embed_model=self.embed)
+        store_fin_stmt = VectorStoreIndex.from_documents(documents=index_fin_stmt_document, storage_context=storage_context_fin_stmt, embed_model=self.embed)
+        store_stock_prices = VectorStoreIndex.from_documents(documents=index_stock_prices_document, storage_context=storage_context_stock_prices, embed_model=self.embed)
 
         query_engine_fin_stmt = store_fin_stmt.as_query_engine()
         query_engine_stock_prices = store_stock_prices.as_query_engine()
