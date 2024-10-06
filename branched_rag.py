@@ -23,7 +23,7 @@ class BranchedRAG:
         chroma_store_stock_prices = ChromaVectorStore.from_collection(collection=self.chroma_col_stock_prices)
 
         index_fin_stmt_document = SimpleDirectoryReader(input_files=["data/apple_FY24_Q3_Financial_Statements.pdf"]).load_data()
-        index_stock_prices_document = SimpleDirectoryReader(input_files=["data/SP 500 Stock Prices 2014-2017.csv"]).load_data()
+        index_stock_prices_document = SimpleDirectoryReader(input_files=["data/SP_500_Stock_Prices.csv"]).load_data()
 
         storage_context_fin_stmt = StorageContext.from_defaults(vector_store=chroma_store_fin_stmt)
         storage_context_stock_prices = StorageContext.from_defaults(vector_store=chroma_store_stock_prices)
@@ -35,18 +35,18 @@ class BranchedRAG:
         query_engine_stock_prices = store_stock_prices.as_query_engine()
 
         tools = [
-            QueryEngineTool(query_engine=query_engine_fin_stmt, name="fin_stmt", metadata=ToolMetadata
-                            (description="Use this tool for accessing financial statements")),
-            QueryEngineTool(query_engine=query_engine_stock_prices, name="stock_prices", metadata=ToolMetadata
-                            (description="Use this tool for accessing stock prices"))
+            QueryEngineTool(query_engine=query_engine_fin_stmt, metadata=ToolMetadata
+                            (name="fin_stmt", description="Use this tool for accessing financial statements")),
+            QueryEngineTool(query_engine=query_engine_stock_prices, metadata=ToolMetadata
+                            (name="stock_prices", description="Use this tool for accessing stock prices"))
         ]
 
-        agent = ReActAgent(llm=Settings.llm, tools=tools)
+        agent = ReActAgent.from_tools(llm=Settings.llm, tools=tools)
         self.agent = agent
     
     def query_data(self, query):
         response = self.agent.chat(query)
-        logger.info("Received response ", response)
+        return str(response.response)
 
 if __name__ == "__main__":
     load_dotenv()
@@ -55,8 +55,9 @@ if __name__ == "__main__":
     branched_rag = BranchedRAG(chroma_col_fin_stmt=db.create_collection(name="fin_stmt"), 
                                chroma_col_stock_prices=db.create_collection(name="stock_prices"))
     branched_rag.generate_embeddings()
-    branched_rag.query_data("Total earnings of Apple during Q3 2024 and the average stock price during that period")
-    
+    query = "Total earnings of Apple during Q3 2024 and the average stock price during that period"
+    response = branched_rag.query_data(query=query)
+    logger.info("Query: {}, \nResponse: {}", query, response)
     
 
         
