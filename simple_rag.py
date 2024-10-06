@@ -43,13 +43,12 @@ if __name__ == "__main__":
     load_dotenv()
     # Initializations
     Settings.llm = Anthropic(model="claude-3-sonnet-20240229")
-    chromadb_client = chromadb.PersistentClient()
+    chromadb_client = chromadb.EphemeralClient()
     collection = chromadb_client.create_collection(name="embeddings", get_or_create=True)
     simple_rag = SimpleRAG(chroma_collection=collection)
-    if collection.count() ==0:
-        logger.info("generating embeddings")
-        simple_rag.generate_embeddings()
-    logger.info(simple_rag.query_data("Earnings before taxes"))
+    simple_rag.generate_embeddings()
+    query = "Earnings before taxes"
+    logger.info("Query: {}, \n Response: {}", query, simple_rag.query_data(query))
 
 
 

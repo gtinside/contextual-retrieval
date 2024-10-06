@@ -80,7 +80,7 @@ if __name__ == "__main__":
                 "What's the percentage change between them?"]
     
     for index, query in enumerate(queries):
-        logger.info(f"Query {index + 1}: {query}; Response {index}: {rag_with_mem.query_data(query)}")
+        logger.info(f"Query {index + 1}: {query} \nResponse {index + 1}: {rag_with_mem.query_data(query)}")
     
 
     
