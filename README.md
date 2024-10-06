@@ -8,7 +8,8 @@ Exploring various way to implement RAG
    Sample Output
    ```
    Query: Earnings before taxes
-   Response: Apple Inc. reported income before provision for income taxes of $25,494 million for the three months ended June 29, 2024, and $93,875 million for the nine months ended June 29, 2024.
+   Response: Apple Inc. reported income before provision for income taxes of $25,494 million for the
+   three months ended June 29, 2024, and $93,875 million for the nine months ended June 29, 2024.
    ```
 
 2. [Simple RAG with Memory](./rag_with_mem.py)
@@ -17,13 +18,19 @@ Exploring various way to implement RAG
    Sample Output
    ```
    Query 1: Total marketable securities on June 29, 2024? 
-   Response 1: Based on the condensed consolidated balance sheet as of June 29, 2024, the total marketable securities held by Apple Inc. was $127,476 million, which includes $36,236 million in current marketable securities and $91,240 million in non-current marketable securities.
+   Response 1: Based on the condensed consolidated balance sheet as of June 29, 2024, the total marketable
+   securities held by Apple Inc. was $127,476 million, which includes $36,236 million in current marketable
+   securities and $91,240 million in non-current marketable securities.
 
    Query 2: How about on September 2023? 
-   Response 2: According to the condensed consolidated balance sheet, as of September 30, 2023, Apple Inc. held total marketable securities of $132,134 million, consisting of $31,590 million in current marketable securities and $100,544 million in non-current marketable securities. 
+   Response 2: According to the condensed consolidated balance sheet, as of September 30, 2023, Apple Inc.
+   held total marketable securities of $132,134 million, consisting of $31,590 million in current marketable
+   securities and $100,544 million in non-current marketable securities. 
 
    Query 3: What's the percentage change between them? 
-   Response 2: To calculate the percentage change in total marketable securities between June 29, 2024 and September 30, 2023, I will use the following formula:
+   Response 2: To calculate the percentage change in total marketable securities between June 29, 2024 and
+   September 30, 2023,
+   I will use the following formula:
 
    Percentage change = (New Value - Original Value) / Original Value x 100
 
@@ -34,7 +41,8 @@ Exploring various way to implement RAG
             = (-$4,658 million) / $132,134 million x 100
             = -3.53%
 
-   Therefore, the total marketable securities held by Apple Inc. decreased by 3.53% from September 30, 2023 to June 29, 2024.
+   Therefore, the total marketable securities held by Apple Inc. decreased by 3.53% from September 30, 2023 to
+   June 29, 2024.
 
    ```
 
@@ -44,7 +52,9 @@ Exploring various way to implement RAG
    Sample Output
    ```
    Query: Total earnings of Apple during Q3 2024 and the average stock price during that period, 
-   Response: Based on the provided information, Apple Inc.'s total earnings (net income) during Q3 2024 were $19.8 billion. The average stock price of Apple during Q3 2024, calculated from the monthly prices in July, August, and September, was $232.67.
+   Response: Based on the provided information, Apple Inc.'s total earnings (net income) during Q3 2024 were
+   $19.8 billion. The average stock price of Apple during Q3 2024, calculated from the monthly prices in July,
+   August, and September, was $232.67.
    ```
 
 4. HyDE (Hypothetical Document Embedding)
