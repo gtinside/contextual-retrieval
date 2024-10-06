@@ -36,9 +36,9 @@ class BranchedRAG:
 
         tools = [
             QueryEngineTool(query_engine=query_engine_fin_stmt, metadata=ToolMetadata
-                            (name="fin_stmt", description="Use this tool for accessing financial statements")),
+                            (name="fin_stmt", description="Use this tool for accessing Apple financial statements for Q3 2024")),
             QueryEngineTool(query_engine=query_engine_stock_prices, metadata=ToolMetadata
-                            (name="stock_prices", description="Use this tool for accessing stock prices"))
+                            (name="stock_prices", description="Use this tool for accessing monthly stock prices for Q3 2024"))
         ]
 
         agent = ReActAgent.from_tools(llm=Settings.llm, tools=tools)
