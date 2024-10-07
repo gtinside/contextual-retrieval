@@ -57,6 +57,9 @@ Exploring various way to implement RAG
    August, and September, was $232.67.
    ```
 
+4. Contextual RAG
+   - Prepends chunk-specific explanatory context to each chunk before embedding (“Contextual Embeddings”)
+
 4. HyDE (Hypothetical Document Embedding)
    - Generates a hypothetical ideal document before retrieval to improve search relevance
 
