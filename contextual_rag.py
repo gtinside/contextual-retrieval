@@ -1,6 +1,6 @@
 import chromadb
 from loguru import logger
-
+from simple_rag import SimpleRAG
 from llama_index.llms.anthropic import Anthropic
 from llama_index.core import Settings, Document
 from llama_index.embeddings.gemini import GeminiEmbedding
@@ -70,16 +70,27 @@ class ContextualRAG:
 
 if __name__ == "__main__":
     load_dotenv()
+    # General Settings
     Settings.llm = Anthropic(model="claude-3-sonnet-20240229")
     Settings.embed_model = GeminiEmbedding(model_name="models/embedding-001")
-    chroma_client = chromadb.PersistentClient()
-    collection = chroma_client.create_collection("data", get_or_create=True)
+    
+    # Contextual Embeddings
+    chroma_client_contextual = chromadb.PersistentClient()
+    collection = chroma_client_contextual.create_collection("data", get_or_create=True)
     contextual_rag = ContextualRAG(chroma_collection=collection)
     if collection.count() == 0:
-        logger.info("Generating embeddings")
+        logger.info("Generating contextual embeddings")
         contextual_rag.generate_embeddings()
-    queries = ["What is this paper all about?"]
+    
+    # Non-contextual embeddings
+    chromadb_client_ep = chromadb.EphemeralClient()
+    collection = chromadb_client_ep.create_collection(name="embeddings")
+    simple_rag = SimpleRAG(chroma_collection=collection, data_file="amazon-dynamo.pdf")
+    simple_rag.generate_embeddings()
+
+    
+    queries = ["What is this paper all about?", "What are some of the technical considerations made in the paper?"]
     for i, query in enumerate(queries):
-        logger.info(f"Query-{i+1} : {query}, Response-{i+1}: {contextual_rag.query_data(query)}")
+        logger.info(f"\n\nQuery-{i+1} : {query}, \nContextual Response-{i+1}: {contextual_rag.query_data(query)}, \nNon-contextual Response-{i+1}: {simple_rag.query_data(query)}")
         
     
