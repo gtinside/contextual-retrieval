@@ -63,11 +63,24 @@ Exploring various way to implement RAG
    Sample Output
    ```
    Query-1 : What is this paper all about?, 
-   Contextual Response-1: This paper describes the design and implementation of Dynamo, a highly available key-value storage system used by Amazon for managing state across many of its core services. It explains how Dynamo utilizes consistent hashing with virtual nodes for partitioning data across nodes, and employs a replication strategy to achieve high availability and durability of data., 
-   Non-contextual Response-1: This paper presents Dynamo, a highly available and scalable distributed data storage system designed by Amazon to meet the requirements of its e-commerce platform. Dynamo provides a simple key-value data model, eventual consistency, and a decentralized architecture that enables seamless scalability and high availability. The paper discusses the design considerations, implementation details, and real-world experiences of running Dynamo in production to handle massive workloads during peak shopping seasons. It highlights how different techniques were combined to achieve a highly available and performant storage system that can meet strict performance demands while allowing services to trade off between consistency, durability, and cost-effectiveness based on their specific needs.
+   Contextual Response-1: This paper describes the design and implementation of Dynamo, a highly available
+   key-value storage system used by Amazon for managing state across many of its core services. It explains
+   how Dynamo utilizes consistent hashing with virtual nodes for partitioning data across nodes, and employs
+   a replication strategy to achieve high availability and durability of data., 
+   Non-contextual Response-1: This paper presents Dynamo, a highly available and scalable distributed data storage
+   system designed by Amazon to meet the requirements of its e-commerce platform. Dynamo provides a simple key-value
+   data model, eventual consistency, and a decentralized architecture that enables seamless scalability and high availability.
+   The paper discusses the design considerations, implementation details, and real-world experiences of running Dynamo in
+   production to handle massive workloads during peak shopping seasons. It highlights how different techniques were combined
+   to achieve a highly available and performant storage system that can meet strict performance demands while allowing services
+   to trade off between consistency, durability, and cost-effectiveness based on their specific needs.
 
    Query-2 : What are some of the technical considerations made in the paper?, 
-   Contextual Response-2: Based on the context provided, some of the key technical considerations discussed in the paper are the tradeoffs between strong consistency and high availability in the design of Dynamo, Amazon's highly available key-value storage system. The paper likely explores how Dynamo handles network partitions and server failures while maintaining high availability, potentially sacrificing strong consistency guarantees in favor of availability. The design aims to provide a robust and resilient distributed storage solution capable of managing state across Amazon's core services., 
+   Contextual Response-2: Based on the context provided, some of the key technical considerations discussed in the paper are
+   the tradeoffs between strong consistency and high availability in the design of Dynamo, Amazon's highly available key-value
+   storage system. The paper likely explores how Dynamo handles network partitions and server failures while maintaining high availability,
+   potentially sacrificing strong consistency guarantees in favor of availability. The design aims to provide a robust and resilient
+   distributed storage solution capable of managing state across Amazon's core services., 
    Non-contextual Response-2: Some of the key technical considerations made in the paper are:
 
     1. Providing high availability and durability by using data replication across multiple nodes, even in the face of node failures and network partitions.
