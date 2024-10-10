@@ -46,12 +46,25 @@ class ContextualRAG:
                 and nothing else. """
 
             message = ChatMessage(role=MessageRole.USER, content=context_prompt)
-            logger.info("Received response: {}", Settings.llm.chat(messages=[message]))
-            processed_documents.append(Document(text=message))
+            response = Settings.llm.chat(messages=[message])
+            logger.info("Received response: {}", response)
+            processed_documents.append(Document(text=response.message.content))
+        
         vector_store = ChromaVectorStore(chroma_collection = self.chroma_collection)
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         VectorStoreIndex.from_documents(documents=processed_documents, storage_context=storage_context)
         
+    
+    def query_data(self, query):
+        # load index, as it is stored in vector database as embeddings
+        # Step 1: Load Chroma Vector Store
+        chroma_vector_store = ChromaVectorStore(chroma_collection=self.chroma_collection)
+       # Step 2: Load Index
+        index = VectorStoreIndex.from_vector_store(
+            vector_store=chroma_vector_store
+        )
+        query_engine = index.as_query_engine()
+        return query_engine.query(query)
 
 
 
@@ -59,7 +72,14 @@ if __name__ == "__main__":
     load_dotenv()
     Settings.llm = Anthropic(model="claude-3-sonnet-20240229")
     Settings.embed_model = GeminiEmbedding(model_name="models/embedding-001")
-    chroma_client = chromadb.EphemeralClient()
-    collection = chroma_client.create_collection("data")
+    chroma_client = chromadb.PersistentClient()
+    collection = chroma_client.create_collection("data", get_or_create=True)
     contextual_rag = ContextualRAG(chroma_collection=collection)
-    contextual_rag.generate_embeddings()
+    if collection.count() == 0:
+        logger.info("Generating embeddings")
+        contextual_rag.generate_embeddings()
+    queries = ["What is this paper all about?"]
+    for i, query in enumerate(queries):
+        logger.info(f"Query-{i+1} : {query}, Response-{i+1}: {contextual_rag.query_data(query)}")
+        
+    
